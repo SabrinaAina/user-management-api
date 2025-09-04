@@ -1,0 +1,118 @@
+### =========================
+###  AUTHENTICATION TESTS
+### =========================
+
+### 1. Unauthorized request (no API key)
+GET http://localhost:5112/users
+Accept: application/json
+
+### 2. Unauthorized request (invalid API key)
+GET http://localhost:5112/users
+X-Api-Key: WrongKey123
+Accept: application/json
+
+### 3. Authorized request (valid API key)
+GET http://localhost:5112/users
+X-Api-Key: TechHiveSecretAuthKey123
+Accept: application/json
+
+
+
+### =========================
+###  HAPPY PATH TESTS (Authorized)
+### =========================
+
+### Get all users
+GET http://localhost:5112/users
+X-Api-Key: TechHiveSecretAuthKey123
+Accept: application/json
+
+### Get user by ID (existing)
+GET http://localhost:5112/users/1
+X-Api-Key: TechHiveSecretAuthKey123
+Accept: application/json
+
+### Add a new valid user
+POST http://localhost:5112/users
+X-Api-Key: TechHiveSecretAuthKey123
+Content-Type: application/json
+
+{
+  "id": 3,
+  "name": "Charlie",
+  "email": "charlie@example.com"
+}
+
+### Update an existing user
+PUT http://localhost:5112/users/3
+X-Api-Key: TechHiveSecretAuthKey123
+Content-Type: application/json
+
+{
+  "id": 3,
+  "name": "Charlie Updated",
+  "email": "charlie.updated@example.com"
+}
+
+### Delete an existing user
+DELETE http://localhost:5112/users/3
+X-Api-Key: TechHiveSecretAuthKey123
+
+
+
+### =========================
+###  ERROR CASE TESTS (Authorized)
+### =========================
+
+### Get user by ID (non-existent)
+GET http://localhost:5112/users/999
+X-Api-Key: TechHiveSecretAuthKey123
+Accept: application/json
+
+### Add a user with missing name (validation error)
+POST http://localhost:5112/users
+X-Api-Key: TechHiveSecretAuthKey123
+Content-Type: application/json
+
+{
+  "id": 4,
+  "name": "",
+  "email": "no.name@example.com"
+}
+
+### Add a user with invalid email (validation error)
+POST http://localhost:5112/users
+X-Api-Key: TechHiveSecretAuthKey123
+Content-Type: application/json
+
+{
+  "id": 5,
+  "name": "Invalid Email User",
+  "email": "not-an-email"
+}
+
+### Add a user with duplicate ID (conflict)
+POST http://localhost:5112/users
+X-Api-Key: TechHiveSecretAuthKey123
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Duplicate ID",
+  "email": "duplicate@example.com"
+}
+
+### Update a non-existent user (not found)
+PUT http://localhost:5112/users/999
+X-Api-Key: TechHiveSecretAuthKey123
+Content-Type: application/json
+
+{
+  "id": 999,
+  "name": "Ghost User",
+  "email": "ghost@example.com"
+}
+
+### Delete a non-existent user (not found)
+DELETE http://localhost:5112/users/999
+X-Api-Key: TechHiveSecretAuthKey123
